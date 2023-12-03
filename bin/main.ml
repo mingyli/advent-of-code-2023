@@ -21,6 +21,8 @@ let command =
     let run =
       match day with
       | 1 -> Day1.run
+      | 2 -> Day2.run
+      | 3 -> Day3.run
       | _ -> assert false
     in
     run which
