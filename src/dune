@@ -1,0 +1,8 @@
+(library
+ (name src)
+ (libraries core str re)
+ (inline_tests
+  (deps
+   (glob_files ../input/*)))
+ (preprocess
+  (pps ppx_jane ppx_inline_test ppx_expect)))
