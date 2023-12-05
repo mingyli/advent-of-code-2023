@@ -1,4 +1,5 @@
 open! Core
+open More
 
 module Card = struct
   type t =
@@ -9,19 +10,19 @@ module Card = struct
   [@@deriving sexp, fields]
 
   let of_string s =
-    match Str.(split (regexp ": +")) s with
+    match String.split_on s ~on:":" with
     | [ card; numbers ] ->
       let id =
-        match Str.(split (regexp " +")) card with
+        match String.split_whitespace card with
         | [ "Card"; id ] -> Int.of_string id
         | _ -> assert false
       in
-      (match Str.(split (regexp " | ")) numbers with
+      (match String.split_on numbers ~on:"|" with
        | [ winning_numbers; numbers_you_have ] ->
          let winning_numbers =
-           Str.(split (regexp " +")) winning_numbers |> List.map ~f:Int.of_string
+           String.split_whitespace winning_numbers |> List.map ~f:Int.of_string
          and numbers_you_have =
-           Str.(split (regexp " +")) numbers_you_have |> List.map ~f:Int.of_string
+           String.split_whitespace numbers_you_have |> List.map ~f:Int.of_string
          in
          { id; winning_numbers; numbers_you_have }
        | _ -> assert false)

@@ -1,4 +1,5 @@
 open! Core
+open More
 
 module Game = struct
   module Subset = struct
@@ -10,12 +11,12 @@ module Game = struct
     [@@deriving fields, sexp]
 
     let of_string s =
-      let counts = Str.split (Str.regexp ", ") s in
+      let counts = String.split_on s ~on:"," in
       List.fold counts ~init:{ blue = 0; red = 0; green = 0 } ~f:(fun t count ->
-        match String.lsplit2_exn count ~on:' ' with
-        | count, "blue" -> { t with blue = Int.of_string count }
-        | count, "red" -> { t with red = Int.of_string count }
-        | count, "green" -> { t with green = Int.of_string count }
+        match String.split_whitespace count with
+        | [ count; "blue" ] -> { t with blue = Int.of_string count }
+        | [ count; "red" ] -> { t with red = Int.of_string count }
+        | [ count; "green" ] -> { t with green = Int.of_string count }
         | _ -> assert false)
     ;;
 
@@ -30,14 +31,14 @@ module Game = struct
   [@@deriving sexp]
 
   let of_string s =
-    match Str.split (Str.regexp ": ") s with
+    match String.split_on s ~on:":" with
     | [ game; subsets ] ->
       let id =
-        match String.lsplit2_exn game ~on:' ' with
-        | "Game", id -> Int.of_string id
+        match String.split_whitespace game with
+        | [ "Game"; id ] -> Int.of_string id
         | _ -> failwith game
       in
-      let subsets = Str.split (Str.regexp "; ") subsets |> List.map ~f:Subset.of_string in
+      let subsets = String.split_on subsets ~on:";" |> List.map ~f:Subset.of_string in
       { id; subsets }
     | _ -> assert false
   ;;

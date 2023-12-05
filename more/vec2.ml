@@ -1,4 +1,4 @@
-open Core
+open! Core
 
 module T = struct
   type t = int * int [@@deriving hash, sexp, compare]
